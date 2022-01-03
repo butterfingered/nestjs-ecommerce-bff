@@ -1,0 +1,43 @@
+###Create a new user
+POST http://localhost:3000/auth/signup
+Content-Type: application/json
+
+{
+  "email":"testHash2@gmail.com",
+  "password": "adassadsdsds",
+  "id":"61cf091fc5280a7975a6c09a"
+}
+
+###signin user
+POST http://localhost:3000/auth/signin
+Content-Type: application/json
+
+{
+  "email":"testHash2@gmail.com",
+  "password": "adassadsdsds",
+  "id":"61cf091fc5280a7975a6c09a"
+}
+
+
+###find user by user id
+GET http://localhost:3000/auth/61cf112554c5be148b565e6e
+Content-Type: application/json
+
+
+###find all users with email test1@gmail.com
+GET http://localhost:3000/auth/?email=taaaaaaa@gmail.com
+Content-Type: application/json
+
+###Delete user by Id
+DELETE http://localhost:3000/auth/61cf0875310889763cf16686
+Content-Type: application/json
+
+###Update user by Id
+PATCH http://localhost:3000/auth/61cf091fc5280a7975a6c096
+Content-Type: application/json
+
+{
+  "email":"taaaaaaa@gmail.com",
+  "password": "tretertertretertetret",
+  "id":"61cf091fc5280a7975a6c09b"
+}
