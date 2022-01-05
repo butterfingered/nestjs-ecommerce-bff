@@ -6,7 +6,6 @@ import {
 import { UsersService } from './users.service'
 import { randomBytes, scrypt as _scrypt } from 'crypto'
 import { promisify } from 'util'
-import { throws } from 'assert'
 
 const scrypt = promisify(_scrypt)
 
@@ -14,7 +13,7 @@ const scrypt = promisify(_scrypt)
 export class AuthService {
   constructor(private usersService: UsersService) {}
 
-  async signup(email: string, password: string, id: string) {
+  async signup(email: string, password: string) {
     const users = await this.usersService.find(email)
 
     if (users.length) {
@@ -27,7 +26,7 @@ export class AuthService {
 
     const result = salt + '.' + hash.toString('hex')
 
-    const user = await this.usersService.create(email, result, id)
+    const user = await this.usersService.create(email, result)
 
     return user
 

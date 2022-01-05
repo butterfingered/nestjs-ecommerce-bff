@@ -8,6 +8,8 @@ import {
   Delete,
   Query,
   NotFoundException,
+  Session,
+  UseGuards
 } from '@nestjs/common'
 import { AuthService } from './auth.service'
 import { CreateUserDto } from './dtos/create-user.dto'
@@ -15,23 +17,58 @@ import { UpdateUserDto } from './dtos/update-user.dto'
 import { UsersService } from './users.service'
 import { UserDto } from './dtos/user.dto'
 import { Serialize } from 'src/interceptors/serialize.interceptor'
+import { CurrentUser } from './decorators/current-user.decorator'
+import { User } from './user.entity'
+import { AuthGuard } from '../guards/auth.guard'
 
-@Serialize(UserDto)
 @Controller('auth')
+@Serialize(UserDto)
 export class UsersController {
   constructor(
     private usersService: UsersService,
     private authService: AuthService,
   ) {}
 
+  @Get('/colors/:color')
+  setColor(@Param('color') color: string, @Session() session: any) {
+    session.color = color
+  }
+
+  @Get('/colors')
+  getColor(@Session() session: any) {
+    console.log('session.color', session.color)
+    return session.color
+  }
+
+  /*  
+  @Get('/whoami')
+  whoAmi(@Session() session: any) {
+    return this.usersService.findOne(session.userId)
+  }*/
+
+  @Get('/whoami')
+  @UseGuards(AuthGuard)
+  whoAmi(@CurrentUser() user: User) {
+    return user
+  }
+
+  @Post('signout')
+  async signOut(@Session() session: any) {
+    session.userId = null
+  }
+
   @Post('signup')
-  createUser(@Body() body: CreateUserDto) {
-    return this.authService.signup(body.email, body.password, body.id)
+  async createUser(@Body() body: CreateUserDto, @Session() session: any) {
+    const user = await this.authService.signup(body.email, body.password)
+    session.userId = user.id
+    return user
   }
 
   @Post('signin')
-  signin(@Body() body: CreateUserDto) {
-    return this.authService.signin(body.email, body.password)
+  async signin(@Body() body: CreateUserDto, @Session() session: any) {
+    const user = await this.authService.signin(body.email, body.password)
+    session.userId = user.id
+    return user
   }
 
   @Get('/:id')

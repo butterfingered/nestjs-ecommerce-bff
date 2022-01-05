@@ -1,26 +1,31 @@
-###Create a new user
+### Create a new user
 POST http://localhost:3000/auth/signup
 Content-Type: application/json
 
 {
-  "email":"testHash2@gmail.com",
-  "password": "adassadsdsds",
-  "id":"61cf091fc5280a7975a6c09a"
+  "email":"test1@test1.com",
+  "password": "123456"
 }
 
-###signin user
+### signin user
 POST http://localhost:3000/auth/signin
 Content-Type: application/json
 
 {
-  "email":"testHash2@gmail.com",
-  "password": "adassadsdsds",
-  "id":"61cf091fc5280a7975a6c09a"
+  "email":"test1@test1.com",
+  "password": "123456"
 }
+
+### Get the currently signed user
+GET http://localhost:3000/auth/whoami
+
+### signout user
+POST http://localhost:3000/auth/signout
+
 
 
 ###find user by user id
-GET http://localhost:3000/auth/61cf112554c5be148b565e6e
+GET http://localhost:3000/auth/d991450c-44cc-4b64-9d48-862b193e516b
 Content-Type: application/json
 
 
@@ -41,3 +46,11 @@ Content-Type: application/json
   "password": "tretertertretertetret",
   "id":"61cf091fc5280a7975a6c09b"
 }
+
+
+###Set a color
+Get http://localhost:3000/auth/colors/dasdsdadsadasdsss
+
+###get the color
+Get http://localhost:3000/auth/colors
+

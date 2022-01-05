@@ -1,21 +1,29 @@
-import { Injectable, NotFoundException } from '@nestjs/common'
+import {
+  Injectable,
+  NotFoundException,
+  BadRequestException,
+} from '@nestjs/common'
 import { Repository } from 'typeorm'
 import { InjectRepository } from '@nestjs/typeorm'
 import { User } from './user.entity'
+import { uuidV4, uuidValidateV4 } from '../helpers/uuid'
 
 @Injectable()
 export class UsersService {
   constructor(@InjectRepository(User) private repo: Repository<User>) {}
 
-  async create(email: string, password: string, id: string) {
-    const user = await this.repo.create({ email, password, id })
+  async create(email: string, password: string) {
+    const user = await this.repo.create({ email, password, id: uuidV4 })
     return this.repo.save(user)
   }
 
-  findOne(id: string) {
-    const user = this.repo.findOne(id)
+  async findOne(id: string) {
+    if (!uuidValidateV4(id))
+      throw new BadRequestException(`the id ${id} is not valid`)
 
-    if (!user) console.log('error')
+    const user = await this.repo.findOne({ id })
+
+    if (!user) throw new NotFoundException(`id ${id} not found`)
 
     return user
   }
