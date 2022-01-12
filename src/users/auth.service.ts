@@ -1,8 +1,4 @@
-import {
-  Injectable,
-  BadRequestException,
-  NotFoundException,
-} from '@nestjs/common'
+import { Injectable, BadRequestException, NotFoundException } from '@nestjs/common'
 import { UsersService } from './users.service'
 import { randomBytes, scrypt as _scrypt } from 'crypto'
 import { promisify } from 'util'
@@ -29,16 +25,6 @@ export class AuthService {
     const user = await this.usersService.create(email, result)
 
     return user
-
-    //See is the email is in use
-
-    //hash the users password
-    //generate a salt
-    //hash the salt and the password together
-
-    //Create a neww user and save it
-
-    // return the user
   }
 
   async signin(email: string, password: string) {

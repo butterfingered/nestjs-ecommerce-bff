@@ -1,16 +1,4 @@
-import {
-  Body,
-  Controller,
-  Post,
-  Get,
-  Patch,
-  Param,
-  Delete,
-  Query,
-  NotFoundException,
-  Session,
-  UseGuards
-} from '@nestjs/common'
+import { Body, Controller, Post, Get, Patch, Param, Delete, Query, NotFoundException, Session, UseGuards } from '@nestjs/common'
 import { AuthService } from './auth.service'
 import { CreateUserDto } from './dtos/create-user.dto'
 import { UpdateUserDto } from './dtos/update-user.dto'
@@ -24,10 +12,7 @@ import { AuthGuard } from '../guards/auth.guard'
 @Controller('auth')
 @Serialize(UserDto)
 export class UsersController {
-  constructor(
-    private usersService: UsersService,
-    private authService: AuthService,
-  ) {}
+  constructor(private usersService: UsersService, private authService: AuthService) {}
 
   @Get('/colors/:color')
   setColor(@Param('color') color: string, @Session() session: any) {
