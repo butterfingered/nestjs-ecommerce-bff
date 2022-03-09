@@ -4,7 +4,7 @@ import { CreateUserDto } from './dtos/create-user.dto'
 import { UpdateUserDto } from './dtos/update-user.dto'
 import { UsersService } from './users.service'
 import { UserDto } from './dtos/user.dto'
-import { Serialize } from 'src/interceptors/serialize.interceptor'
+import { Serialize } from '../interceptors/serialize.interceptor'
 import { CurrentUser } from './decorators/current-user.decorator'
 import { User } from './user.entity'
 import { AuthGuard } from '../guards/auth.guard'
@@ -44,6 +44,7 @@ export class UsersController {
 
   @Post('signup')
   async createUser(@Body() body: CreateUserDto, @Session() session: any) {
+    console.log('va el body', body)
     const user = await this.authService.signup(body.email, body.password)
     session.userId = user.id
     return user

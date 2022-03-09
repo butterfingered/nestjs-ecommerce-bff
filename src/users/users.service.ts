@@ -9,8 +9,17 @@ export class UsersService {
   constructor(@InjectRepository(User) private repo: Repository<User>) {}
 
   async create(email: string, password: string) {
-    const user = await this.repo.create({ email, password, id: uuidV4 })
-    return this.repo.save(user)
+    try {
+      console.log('estoy pasando por create')
+      const user = await this.repo.create({ email, password, id: uuidV4 })
+      const userSaved = await this.repo.save(user).catch((e) => {
+        console.error('que ondaaaaa', e)
+        return {} as User
+      })
+      return userSaved
+    } catch (e) {
+      throw new BadRequestException('sdsadsadsadasdsad', e)
+    }
   }
 
   async findOne(id: string) {
