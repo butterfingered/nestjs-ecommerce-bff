@@ -1,4 +1,4 @@
-import { MigrationInterface, QueryRunner } from 'typeorm'
+const { MigrationInterface, QueryRunner, Table } = require('typeorm');
 
 module.exports = class initalSchema1648034914829 {
   name = 'initalSchema1648034914829'
