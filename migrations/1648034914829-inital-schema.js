@@ -1,4 +1,6 @@
-export default class initalSchema1648034914829 {
+import { MigrationInterface, QueryRunner } from 'typeorm'
+
+module.exports = class initalSchema1648034914829 {
   name = 'initalSchema1648034914829'
 
   async up(queryRunner) {
