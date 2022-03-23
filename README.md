@@ -32,6 +32,18 @@
 $ npm install
 ```
 
+## Migrations
+
+```bash
+#Generate a new migration from entities
+$ yarn run typeorm migration:generate -- -n inital-schema -o
+this will create sql sentences in migrations folder (/migrations)
+
+#Running the migration
+$ yarn run typeorm migration:run
+this will run the sql sentences in db
+```
+
 ## Running the app
 
 ```bash

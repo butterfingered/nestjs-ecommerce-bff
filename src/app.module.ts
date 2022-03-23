@@ -1,5 +1,5 @@
 import { MiddlewareConsumer, Module, ValidationPipe } from '@nestjs/common'
-import { ConfigModule, ConfigService } from '@nestjs/config'
+import { ConfigService, ConfigModule } from '@nestjs/config'
 import { APP_PIPE } from '@nestjs/core'
 import { AppController } from './app.controller'
 import { AppService } from './app.service'
@@ -17,19 +17,8 @@ const cookieSession = require('cookie-session')
       isGlobal: true,
       envFilePath: `.env.${process.env.NODE_ENV}`,
     }),
-    TypeOrmModule.forRootAsync({
-      inject: [ConfigService],
-      useFactory: (config: ConfigService) => {
-        return {
-          type: 'sqlite',
-          url: '',
-          database: config.get<string>('DB_NAME'),
-          keepConnectionAlive: true,
-          entities: [User, Report],
-          synchronize: true,
-        }
-      },
-    }),
+    //usinng for setup multiple ENV.
+    TypeOrmModule.forRoot(),
     /*
     TypeOrmModule.forRoot({
       type: 'mongodb',
@@ -57,7 +46,8 @@ const cookieSession = require('cookie-session')
   ],
 })
 export class AppModule {
+  constructor(private configService: ConfigService) {}
   configure(consumer: MiddlewareConsumer) {
-    consumer.apply(cookieSession({ keys: ['cookieSession'] })).forRoutes('*')
+    consumer.apply(cookieSession({ keys: [this.configService.get<string>('COOKIE_KEY')] })).forRoutes('*')
   }
 }
