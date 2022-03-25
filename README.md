@@ -26,6 +26,11 @@
 
 [Nest](https://github.com/nestjs/nest) framework TypeScript starter repository.
 
+```bash
+## Installation nest framework CLI
+npm i -g @nestjs/cli
+```
+
 ## Installation
 
 ```bash
@@ -48,17 +53,18 @@ this will run the sql sentences in db
 
 ```bash
 # development
-$ npm run start
+$ npm run start:dev
 
 # watch mode
 $ npm run start:dev
 
 # production mode
 $ npm run start:prod
-```
 
+# update nest project
+$ nest update --force
 ## Test
-
+```
 ```bash
 # unit tests
 $ npm run test

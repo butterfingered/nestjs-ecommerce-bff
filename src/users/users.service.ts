@@ -10,7 +10,6 @@ export class UsersService {
 
   async create(email: string, password: string) {
     try {
-      console.log('estoy pasando por create')
       const user = await this.repo.create({ email, password, id: uuidV4 })
       const userSaved = await this.repo.save(user).catch((e) => {
         console.error('que ondaaaaa', e)
