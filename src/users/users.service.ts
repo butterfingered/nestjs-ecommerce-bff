@@ -10,7 +10,9 @@ export class UsersService {
 
   async create(email: string, password: string) {
     try {
+      console.log('Entrando a create', email, password)
       const user = await this.repo.create({ email, password, id: uuidV4 })
+      console.log('user', user)
       const userSaved = await this.repo.save(user).catch((e) => {
         console.error('que ondaaaaa', e)
         return {} as User
@@ -26,7 +28,7 @@ export class UsersService {
 
     const user = await this.repo.findOne({ id })
 
-    if (!user) throw new NotFoundException(`id ${id} not found`)
+    if (!user) throw new NotFoundException(`id ${id} not found in db`)
 
     return user
   }

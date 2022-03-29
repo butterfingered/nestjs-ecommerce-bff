@@ -1,6 +1,12 @@
+@host = http://localhost:3000
+@userAgent = Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.164 Safari/537.36
+
+
 ### Create a new user
-POST http://localhost:3000/auth/signup
+POST {{host}}/auth/signup
 Content-Type: application/json
+User-Agent: {{userAgent}}
+Cookie:'session=eyJ1c2VySWQiOiI1MTI1OGU3ZC1iOWJhLTQxMmMtOGU4NC02MDAxNDY5NTQ3OGQifQ==; session.sig=7ceTuLqrKZ4qHvV6uWnkB4Dd6So
 
 {
   "email":"test1@test3.com",

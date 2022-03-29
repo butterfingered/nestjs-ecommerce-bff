@@ -1,32 +1,22 @@
 // eslint-disable-next-line @typescript-eslint/no-var-requires
-const mongoUnit = require('mongo-unit')
 const dbConfig = {
   synchronize: true,
 }
 switch (process.env.NODE_ENV) {
   case 'dev':
+    console.log('leyendo archivo')
     Object.assign(dbConfig, {
       type: 'mongodb',
-      url: 'mongodb://localhost/dev_seomanager',
+      url: process.env.DATABASE_URL,
       database: 'dev_seomanager',
       entities: ['**/*.entity.js'],
       synchronize: true,
       useUnifiedTopology: true,
       keepConnectionAlive: true,
     })
+    console.log('conecction', dbConfig)
     break
   case 'test':
-    mongoUnit
-      .start()
-      .then(() => {
-        console.log('fake mongo is started: ', mongoUnit.getUrl())
-        process.env.DATABASE_URL = mongoUnit.getUrl() // this var process.env.DATABASE_URL = will keep link to fake mongo
-        console.log('process.env.DATABASE_URL', process.env.DATABASE_URL)
-      })
-      .catch((error) => {
-        console.error('este es el error', error)
-      })
-
     Object.assign(dbConfig, {
       type: 'mongodb',
       database: 'memory',

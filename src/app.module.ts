@@ -5,9 +5,7 @@ import { AppController } from './app.controller'
 import { AppService } from './app.service'
 import { UsersModule } from './users/users.module'
 import { ReportsModule } from './reports/reports.module'
-import { TypeOrmModule } from '@nestjs/typeorm'
-import { User } from './users/user.entity'
-import { Report } from './reports/report.entity'
+import { DatabaseModule } from './database/database.module'
 // eslint-disable-next-line @typescript-eslint/no-var-requires
 const cookieSession = require('cookie-session')
 
@@ -15,22 +13,10 @@ const cookieSession = require('cookie-session')
   imports: [
     ConfigModule.forRoot({
       isGlobal: true,
+      cache: true,
       envFilePath: `.env.${process.env.NODE_ENV}`,
     }),
-    //usinng for setup multiple ENV.
-    TypeOrmModule.forRoot(),
-    /*
-    TypeOrmModule.forRoot({
-      type: 'mongodb',
-      url: '',
-      database: 'localdb',
-      useUnifiedTopology: true,
-      entities: [User, Report],
-      synchronize: true,
-      keepConnectionAlive: true,
-    }),
-
-    */
+    DatabaseModule,
     UsersModule,
     ReportsModule,
   ],
