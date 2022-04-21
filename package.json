@@ -22,10 +22,10 @@
     "typeorm": "cross-env NODE_ENV=dev node --require ts-node/register ./node_modules/typeorm/cli.js"
   },
   "dependencies": {
-    "@nestjs/common": "^8.4.2",
+    "@nestjs/common": "^8.4.4",
     "@nestjs/config": "^2.0.0",
-    "@nestjs/core": "^8.4.2",
-    "@nestjs/platform-express": "^8.4.2",
+    "@nestjs/core": "^8.4.4",
+    "@nestjs/platform-express": "^8.4.4",
     "@nestjs/typeorm": "^8.0.3",
     "@types/cookie-session": "^2.0.44",
     "@types/uuid": "^8.3.3",
@@ -42,9 +42,9 @@
     "uuid": "^8.3.2"
   },
   "devDependencies": {
-    "@nestjs/cli": "^8.0.0",
-    "@nestjs/schematics": "^8.0.0",
-    "@nestjs/testing": "^8.4.0",
+    "@nestjs/cli": "^8.2.5",
+    "@nestjs/schematics": "^8.0.10",
+    "@nestjs/testing": "^8.4.4",
     "@types/express": "^4.17.13",
     "@types/jest": "27.0.2",
     "@types/node": "^16.0.0",
