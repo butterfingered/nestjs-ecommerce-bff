@@ -1,22 +1,24 @@
+import { CreateUserDto } from './dtos/create-user.dto'
 import { Injectable, NotFoundException, BadRequestException } from '@nestjs/common'
 import { Repository } from 'typeorm'
 import { InjectRepository } from '@nestjs/typeorm'
-import { User } from './user.entity'
-import { uuidV4, uuidValidateV4 } from '../helpers/uuid'
+import { UserEntity } from './user.entity'
+import { uuidValidateV4 } from '../helpers'
 
 @Injectable()
 export class UsersService {
-  constructor(@InjectRepository(User) private repo: Repository<User>) {}
+  constructor(@InjectRepository(UserEntity) private repo: Repository<UserEntity>) {}
 
-  async create(email: string, password: string) {
+  async create(createUserDto: CreateUserDto) {
     try {
-      console.log('Entrando a create', email, password)
-      const user = await this.repo.create({ email, password, id: uuidV4 })
-      console.log('user', user)
+      console.log('Entrando a create', createUserDto.email)
+      const user = await this.repo.create(createUserDto)
+      console.log('new user created', user)
       const userSaved = await this.repo.save(user).catch((e) => {
         console.error('que ondaaaaa', e)
-        return {} as User
+        return {} as UserEntity
       })
+      console.log('user created and saved:', userSaved)
       return userSaved
     } catch (e) {
       throw new BadRequestException('sdsadsadsadasdsad', e)
@@ -37,7 +39,7 @@ export class UsersService {
     return this.repo.find({ email })
   }
 
-  async update(id: string, attrs: Partial<User>) {
+  async update(id: string, attrs: Partial<UserEntity>) {
     const user = await this.findOne(id)
 
     if (!user) {

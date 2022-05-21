@@ -44,7 +44,6 @@ Routes is following REST standard (Richardson level 3)
 </details>`,
     )
     .addBearerAuth()
-
     .setVersion('1.0.0')
     .addTag('ecommerce')
 
@@ -56,6 +55,7 @@ Routes is following REST standard (Richardson level 3)
   SwaggerModule.setup('documentation', app, document, {
     swaggerOptions: {
       persistAuthorization: true,
+      filter: true,
     },
   })
 

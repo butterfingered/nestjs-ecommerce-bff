@@ -1,7 +1,9 @@
+import { CreateUserDto } from './dtos/create-user.dto'
 import { Injectable, BadRequestException, NotFoundException } from '@nestjs/common'
 import { UsersService } from './users.service'
 import { randomBytes, scrypt as _scrypt } from 'crypto'
 import { promisify } from 'util'
+import { generateHash, validateHash } from 'src/helpers'
 
 const scrypt = promisify(_scrypt)
 
@@ -9,22 +11,16 @@ const scrypt = promisify(_scrypt)
 export class AuthService {
   constructor(private usersService: UsersService) {}
 
-  async signup(email: string, password: string) {
-    const users = await this.usersService.find(email)
+  async signup(createUserDto: CreateUserDto) {
+    const users = await this.usersService.find(createUserDto.email)
     console.log('users find', users.length)
 
     if (users.length) {
       throw new BadRequestException('this email is already taken')
     }
 
-    const salt = randomBytes(8).toString('hex')
-
-    const hash = (await scrypt(password, salt, 32)) as Buffer
-
-    const hashedPassword = salt + '.' + hash.toString('hex')
-    console.log('password hashed', hashedPassword)
-    const user = await this.usersService.create(email, hashedPassword)
-
+    const user = await this.usersService.create(createUserDto)
+    console.log('user returned', user)
     return user
   }
 
@@ -35,12 +31,7 @@ export class AuthService {
       throw new NotFoundException('user not found')
     }
 
-    const [salt, storedHash] = user.password.split('.')
-
-    const hash = (await scrypt(password, salt, 32)) as Buffer
-
-    console.log('Hash:', hash, 'storedHash', storedHash)
-    if (storedHash !== hash.toString('hex')) {
+    if (!(await validateHash(user.password, password))) {
       throw new BadRequestException('bad password')
     }
     return user

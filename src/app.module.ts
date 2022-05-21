@@ -13,6 +13,7 @@ import { Connection } from 'typeorm'
 const cookieSession = require('cookie-session')
 
 import { startMongoInMemory } from './database/databaseConection'
+import { UserSubscriber } from './entity-subscribers/user-subscriber'
 
 @Module({
   imports: [
@@ -20,24 +21,24 @@ import { startMongoInMemory } from './database/databaseConection'
     ReportsModule,
     ConfigModule.forRoot({
       isGlobal: true,
-      cache: true,
+      cache: false,
       envFilePath: `.env.${process.env.NODE_ENV}`,
     }),
     TypeOrmModule.forRootAsync({
       imports: [SharedModule],
       useFactory: async (configService: ConfigService) => {
-        if (!configService.get<string>('DATABASE_URL') && process.env.NODE_ENV === 'dev') await startMongoInMemory()
-
-        return {
-          type: 'mongodb',
-          database: configService.get<string>('database'),
-          name: configService.get<string>('name'),
-          url: configService.get<string>('DATABASE_URL'),
-          useUnifiedTopology: configService.get<boolean>('useUnifiedTopology'),
-          keepConnectionAlive: configService.get<boolean>('keepConnectionAlive'),
-          synchronize: configService.get<boolean>('synchronize'),
-          entities: [configService.get<string>('entities')],
-        }
+        if (!configService.get<string>('DATABASE_URL') && process.env.NODE_ENV === 'dev')
+          return {
+            type: 'mongodb',
+            database: configService.get<string>('database'),
+            name: configService.get<string>('name'),
+            url: configService.get<string>('DATABASE_URL'),
+            useUnifiedTopology: configService.get<boolean>('useUnifiedTopology'),
+            keepConnectionAlive: configService.get<boolean>('keepConnectionAlive'),
+            synchronize: true,
+            entities: [configService.get<string>('entities')],
+            subscribers: [UserSubscriber],
+          }
       },
 
       inject: [ApiConfigService],

@@ -1,7 +1,7 @@
 import { BadRequestException, NotFoundException } from '@nestjs/common'
 import { Test } from '@nestjs/testing'
 import { AuthService } from './auth.service'
-import { User } from './user.entity'
+import { UserEntity } from './user.entity'
 import { UsersService } from './users.service'
 
 describe('AuthService', () => {
@@ -11,7 +11,7 @@ describe('AuthService', () => {
   let fakeUsersService: Partial<UsersService>
 
   beforeEach(async () => {
-    const users: User[] = []
+    const users: UserEntity[] = []
 
     fakeUsersService = {
       find: (email: string) => {
@@ -19,7 +19,7 @@ describe('AuthService', () => {
         return Promise.resolve(filteredUsers)
       },
       create: (email: string, password: string) => {
-        const user = { email, password } as User
+        const user = { email, password } as UserEntity
         users.push(user)
         return Promise.resolve(user)
       },
@@ -52,7 +52,7 @@ describe('AuthService', () => {
   })
 
   it('should response error if user with email that is in use', async () => {
-    fakeUsersService.find = () => Promise.resolve([{ email } as User])
+    fakeUsersService.find = () => Promise.resolve([{ email } as UserEntity])
 
     await service.signup(email, password).catch((error) => {
       expect(error).toEqual(new BadRequestException('this email is already taken'))
@@ -68,7 +68,7 @@ describe('AuthService', () => {
   })
 
   it('thow error if the password is invalid ()', async () => {
-    fakeUsersService.find = () => Promise.resolve([{ email, password } as User])
+    fakeUsersService.find = () => Promise.resolve([{ email, password } as UserEntity])
     try {
       await service.signin(email, password)
     } catch (e) {
