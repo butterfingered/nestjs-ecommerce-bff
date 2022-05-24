@@ -1,7 +1,6 @@
-import { generateHash } from 'src/helpers'
 import { Entity, Column, BeforeInsert } from 'typeorm'
 import { VirtualColumn } from './decorators/virtual-column.decorator'
-import { RoleType } from '../constants/constants'
+import { RoleType } from '../../constants/constants'
 import { UserDto, UserDtoOptions } from './dtos/user.dto'
 import { UseDto } from './decorators/use-dto.decorator'
 import { IAbstractEntity, AbstractEntity } from 'src/common/abstract.entity'
@@ -28,7 +27,7 @@ export class UserEntity extends AbstractEntity<UserDto, UserDtoOptions> implemen
   @Column()
   email: string
 
-  @Column()
+  @Column({ select: false })
   password: string
 
   @Column({ nullable: true })

@@ -1,9 +1,7 @@
 import { MiddlewareConsumer, Module, ValidationPipe } from '@nestjs/common'
 import { ConfigService, ConfigModule } from '@nestjs/config'
 import { APP_PIPE } from '@nestjs/core'
-import { AppController } from './app.controller'
-import { AppService } from './app.service'
-import { UsersModule } from './users/users.module'
+import { UsersModule } from './modules/users/users.module'
 import { ReportsModule } from './reports/reports.module'
 import { TypeOrmModule } from '@nestjs/typeorm'
 import { SharedModule } from './shared/shared.module'
@@ -14,9 +12,11 @@ const cookieSession = require('cookie-session')
 
 import { startMongoInMemory } from './database/databaseConection'
 import { UserSubscriber } from './entity-subscribers/user-subscriber'
+import { AuthModule } from './modules/auth/auth.module'
 
 @Module({
   imports: [
+    AuthModule,
     UsersModule,
     ReportsModule,
     ConfigModule.forRoot({
@@ -44,9 +44,7 @@ import { UserSubscriber } from './entity-subscribers/user-subscriber'
       inject: [ApiConfigService],
     }),
   ],
-  controllers: [AppController],
   providers: [
-    AppService,
     {
       provide: APP_PIPE,
       useValue: new ValidationPipe({

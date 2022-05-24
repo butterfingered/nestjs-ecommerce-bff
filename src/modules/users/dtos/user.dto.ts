@@ -1,4 +1,4 @@
-import { AbstractDto } from '../../common/dto/abstract.dto'
+import { AbstractDto } from '../../../common/dto/abstract.dto'
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger'
 import type { UserEntity } from '../user.entity'
 import { Expose } from 'class-transformer'

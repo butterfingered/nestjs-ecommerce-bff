@@ -2,7 +2,7 @@ import type { EntitySubscriberInterface, InsertEvent, UpdateEvent } from 'typeor
 import { EventSubscriber } from 'typeorm'
 
 import { generateHash } from '../helpers/index'
-import { UserEntity } from '../users/user.entity'
+import { UserEntity } from '../modules/users/user.entity'
 
 @EventSubscriber()
 export class UserSubscriber implements EntitySubscriberInterface<UserEntity> {

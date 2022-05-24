@@ -1,5 +1,6 @@
 import { Injectable } from '@nestjs/common'
 import { ConfigService } from '@nestjs/config'
+import { AuthConfig } from '../../types'
 
 @Injectable()
 export class ApiConfigService {
@@ -15,6 +16,14 @@ export class ApiConfigService {
 
   get isTest(): boolean {
     return this.nodeEnv === 'test'
+  }
+
+  get authConfig(): AuthConfig {
+    return {
+      privateKey: this.getString('JWT_PRIVATE_KEY'),
+      publicKey: this.getString('JWT_PUBLIC_KEY'),
+      jwtExpirationTime: this.getNumber('JWT_EXPIRATION_TIME'),
+    }
   }
 
   private getNumber(key: string): number {

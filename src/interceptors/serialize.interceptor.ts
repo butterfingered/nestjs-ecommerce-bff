@@ -9,9 +9,7 @@ interface ClassConstructor {
 }
 
 export const Serialize = (dto: ClassConstructor) => {
-  const xxx = UseInterceptors(new SerializeInterceptor(dto))
-  console.log('X', xxx)
-  return xxx
+  return UseInterceptors(new SerializeInterceptor(dto))
 }
 
 export class SerializeInterceptor implements NestInterceptor {
@@ -26,15 +24,12 @@ export class SerializeInterceptor implements NestInterceptor {
           console.log('data to expose', data, 'this.dto', this.dto)
           // run something before the response is sent out
           //  console.log('this is running before response is sent out ', data)
-          console.log()
-          return plainToInstance(this.dto, data, { excludeExtraneousValues: false })
+          return plainToInstance(this.dto, data, { excludeExtraneousValues: true })
         } catch (e) {
           console.error('Error', e)
         }
       }),
     )
-
-    console.log('result', result)
     return result
   }
 }
