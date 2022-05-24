@@ -19,7 +19,7 @@ export class AuthController {
   })
   async signIn(@Body() createUserDto: CreateUserDto) {
     const userEntity = await this.authService.validateUser(createUserDto)
-    const token = this.authService.createAccesToken({ role: userEntity.role, id: userEntity.id })
+    const token = await this.authService.createAccesToken({ role: userEntity.role, id: userEntity.id })
     return { token, userEntity }
   }
 

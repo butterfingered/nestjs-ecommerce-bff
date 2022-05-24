@@ -33,11 +33,15 @@ export class UsersService {
   */
 
   findOne(findData: FindConditions<UserEntity>): Promise<Optional<UserEntity>> {
-    return this.repo.findOne(findData)
+    const user = this.repo.findOne(findData)
+    console.log('user founded', user)
+    return user
   }
 
-  find(email: string) {
-    return this.repo.find({ email })
+  async find(email: string) {
+    const users = await this.repo.find({ email })
+    console.log('users founded', users)
+    return users
   }
 
   /*

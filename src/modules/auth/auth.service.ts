@@ -1,5 +1,5 @@
 import { JwtService } from '@nestjs/jwt'
-import { Injectable } from '@nestjs/common'
+import { Injectable, BadRequestException, InternalServerErrorException } from '@nestjs/common'
 import { RoleType, TokenType } from '../../constants/constants'
 import { ApiConfigService } from '../../shared/services/api-config.service'
 import { UsersService } from '../users/users.service'
@@ -14,10 +14,19 @@ export class AuthService {
   constructor(private jwtService: JwtService, private configService: ApiConfigService, private userService: UsersService) {}
 
   async createAccesToken(data: { role: RoleType; id: string }): Promise<TokenDto> {
-    return new TokenDto({
-      expiresIn: this.configService.authConfig.jwtExpirationTime,
-      accessToken: await this.jwtService.signAsync({ id: data.id, type: TokenType.ACCESS_TOKEN }),
-    })
+    try {
+      const payload = { id: data.id, type: TokenType.ACCESS_TOKEN, role: data.role }
+      const accessToken = await this.jwtService.signAsync(payload).catch((e) => {
+        throw new InternalServerErrorException('error creating accessToken', e)
+      })
+
+      return new TokenDto({
+        expiresIn: this.configService.authConfig.jwtExpirationTime,
+        accessToken: accessToken,
+      })
+    } catch (e) {
+      throw new BadRequestException(e)
+    }
   }
 
   async validateUser(createUserDto: CreateUserDto): Promise<UserEntity> {
@@ -27,7 +36,8 @@ export class AuthService {
       throw new UserNotFoundException()
     }
 
-    if (!(await validateHash(user.password, createUserDto.password))) {
+    const isPasswordValidate = await validateHash(user.password, createUserDto.password)
+    if (!isPasswordValidate) {
       throw new UserBadRequestException('the password doesnt match')
     }
     return user
