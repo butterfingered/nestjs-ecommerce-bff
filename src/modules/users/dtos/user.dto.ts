@@ -1,8 +1,8 @@
-import { AbstractDto } from '../../../common/dto/abstract.dto'
-import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger'
-import type { UserEntity } from '../user.entity'
 import { Expose } from 'class-transformer'
-import { RoleType } from 'src/constants/constants'
+import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger'
+import { AbstractDto } from '../../../common/dto/abstract.dto'
+import { RoleType } from '../../../constants/constants'
+import type { UserEntity } from '../user.entity'
 
 export type UserDtoOptions = Partial<{ isActive: boolean }>
 

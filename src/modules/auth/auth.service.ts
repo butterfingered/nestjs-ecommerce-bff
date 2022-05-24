@@ -1,12 +1,13 @@
+import { JwtService } from '@nestjs/jwt'
+import { Injectable } from '@nestjs/common'
 import { RoleType, TokenType } from '../../constants/constants'
 import { ApiConfigService } from '../../shared/services/api-config.service'
-import { BadRequestException, Injectable, NotFoundException } from '@nestjs/common'
-import { JwtService } from '@nestjs/jwt'
 import { UsersService } from '../users/users.service'
 import { TokenDto } from './token.dto'
 import { CreateUserDto } from '../users/dtos/create-user.dto'
 import { validateHash } from '../../helpers'
 import { UserEntity } from '../users/user.entity'
+import { UserBadRequestException, UserNotFoundException } from '../../exceptions/users.exception'
 
 @Injectable()
 export class AuthService {
@@ -23,11 +24,11 @@ export class AuthService {
     const [user] = await this.userService.find(createUserDto.email)
 
     if (!user) {
-      throw new NotFoundException('user not found')
+      throw new UserNotFoundException()
     }
 
     if (!(await validateHash(user.password, createUserDto.password))) {
-      throw new BadRequestException('bad password')
+      throw new UserBadRequestException('the password doesnt match')
     }
     return user
   }
@@ -36,7 +37,7 @@ export class AuthService {
     const users = await this.userService.find(createUserDto.email)
 
     if (users.length) {
-      throw new BadRequestException('this email is already taken')
+      throw new UserBadRequestException('this email is already taken')
     }
 
     return await this.userService.create(createUserDto)

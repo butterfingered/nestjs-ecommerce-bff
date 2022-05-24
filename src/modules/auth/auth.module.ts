@@ -1,11 +1,11 @@
+import { JwtModule } from '@nestjs/jwt'
+import { PassportModule } from '@nestjs/passport'
+import { Module, forwardRef } from '@nestjs/common'
 import { JwtStrategy } from './jwt.strategy'
+import { AuthService } from './auth.service'
 import { ApiConfigService } from '../../shared/services/api-config.service'
 import { UsersModule } from '../users/users.module'
-import { Module, forwardRef } from '@nestjs/common'
-import { PassportModule } from '@nestjs/passport'
 import { AuthController } from './auth.controller'
-import { JwtModule } from '@nestjs/jwt'
-import { AuthService } from './auth.service'
 import { PublicStrategy } from './public.strategy'
 
 @Module({

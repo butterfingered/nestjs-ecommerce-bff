@@ -1,10 +1,11 @@
-import { CreateUserDto } from './dtos/create-user.dto'
-import { Injectable, BadRequestException } from '@nestjs/common'
-import { Repository } from 'typeorm'
+import { Injectable } from '@nestjs/common'
 import { InjectRepository } from '@nestjs/typeorm'
+import { Repository } from 'typeorm'
+import { CreateUserDto } from './dtos/create-user.dto'
 import { UserEntity } from './user.entity'
 import type { FindConditions } from 'typeorm'
 import type { Optional } from '../../types'
+import { UserBadRequestException } from '../../exceptions/users.exception'
 
 @Injectable()
 export class UsersService {
@@ -13,14 +14,9 @@ export class UsersService {
   async create(createUserDto: CreateUserDto): Promise<UserEntity> {
     try {
       const user = await this.repo.create(createUserDto)
-      const userSaved = await this.repo.save(user).catch((e) => {
-        console.error('Error al guardar', e)
-        return {} as UserEntity
-      })
-      console.log('user created and saved:', userSaved)
-      return userSaved
+      return await this.repo.save(user).catch(() => ({} as UserEntity))
     } catch (e) {
-      throw new BadRequestException('sdsadsadsadasdsad', e)
+      throw new UserBadRequestException(e)
     }
   }
 
@@ -37,8 +33,6 @@ export class UsersService {
   */
 
   findOne(findData: FindConditions<UserEntity>): Promise<Optional<UserEntity>> {
-    console.log('aadasdadad')
-    console.log('findOne:', findData)
     return this.repo.findOne(findData)
   }
 
