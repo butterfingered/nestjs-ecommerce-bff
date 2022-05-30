@@ -1,6 +1,6 @@
 import { uuidV4 } from '../helpers'
 import { Constructor } from '../types'
-import { CreateDateColumn, UpdateDateColumn, ObjectIdColumn, PrimaryGeneratedColumn, BeforeInsert } from 'typeorm'
+import { CreateDateColumn, UpdateDateColumn, ObjectIdColumn, PrimaryGeneratedColumn, BeforeInsert, Column } from 'typeorm'
 import { AbstractDto } from './dto/abstract.dto'
 
 export interface IAbstractEntity<DTO extends AbstractDto, O = never> {

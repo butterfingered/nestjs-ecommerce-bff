@@ -4,8 +4,6 @@ import { AbstractDto } from '../../../common/dto/abstract.dto'
 import { RoleType } from '../../../constants/constants'
 import type { UserEntity } from '../user.entity'
 
-export type UserDtoOptions = Partial<{ isActive: boolean }>
-
 export class UserDto extends AbstractDto {
   @ApiProperty()
   @Expose()
@@ -48,11 +46,11 @@ export class UserDto extends AbstractDto {
   @ApiProperty()
   isActive: boolean
 
-  constructor(user: UserEntity, options?: UserDtoOptions) {
+  constructor(user: UserEntity) {
     super(user)
     this.firstName = user.firstName
     this.email = user.email
-    this.isActive = options.isActive
+    this.isActive = user.isActive
     this.secondName = user.secondName
     this.firstLastName = user.firstLastName
     this.secondLastName = user.secondLastName

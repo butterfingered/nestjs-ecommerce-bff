@@ -1,7 +1,7 @@
 import { Entity, Column, BeforeInsert } from 'typeorm'
 import { VirtualColumn } from './decorators/virtual-column.decorator'
 import { RoleType } from '../../constants/constants'
-import { UserDto, UserDtoOptions } from './dtos/user.dto'
+import { UserDto } from './dtos/user.dto'
 import { UseDto } from './decorators/use-dto.decorator'
 import { IAbstractEntity, AbstractEntity } from 'src/common/abstract.entity'
 
@@ -15,15 +15,16 @@ export interface IUserEntity extends IAbstractEntity<UserDto> {
   fullName?: string
   role?: RoleType
   phone?: string
-  isEmailVerified?: boolean
-  isPhoneVerified?: boolean
-  allowEmailMarketing?: boolean
-  isBanned?: boolean
+  isEmailVerified: boolean
+  isPhoneVerified: boolean
+  allowEmailMarketing: boolean
+  isBanned: boolean
+  isActive: boolean
 }
 
 @Entity({ name: 'users' })
 @UseDto(UserDto)
-export class UserEntity extends AbstractEntity<UserDto, UserDtoOptions> implements IUserEntity {
+export class UserEntity extends AbstractEntity<UserDto> implements IUserEntity {
   @Column()
   email: string
 
@@ -62,6 +63,9 @@ export class UserEntity extends AbstractEntity<UserDto, UserDtoOptions> implemen
 
   @Column()
   isBanned: boolean
+
+  @Column()
+  isActive: boolean
 
   @BeforeInsert()
   beforeInsertActions() {

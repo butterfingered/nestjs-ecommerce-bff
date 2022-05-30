@@ -13,6 +13,8 @@ export class AllExceptionsFilter implements ExceptionFilter {
     const request = ctx.getRequest<Request>()
     const httpStatus = exception instanceof HttpException ? exception.getStatus() : HttpStatus.INTERNAL_SERVER_ERROR
 
+    console.log('exception:', exception)
+    console.log('response:', response)
     const result = {
       status: 'fail',
       code: httpStatus,

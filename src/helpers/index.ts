@@ -37,6 +37,6 @@ export const generateHash = async (stringValue: string) => {
 export const validateHash = async (aStringValue: string, bStringValue: string) => {
   const [salt, storedHash] = aStringValue.split('.')
   const hash = (await scrypt(bStringValue, salt, 32)) as Buffer
-  console.log('Hash: ', hash.toString('hex'), 'storedHash: ', storedHash)
+  //console.log('Hash: ', hash.toString('hex'), 'storedHash: ', storedHash)
   return storedHash == hash.toString('hex')
 }

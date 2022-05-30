@@ -3,7 +3,7 @@ import { Injectable, BadRequestException, InternalServerErrorException } from '@
 import { RoleType, TokenType } from '../../constants/constants'
 import { ApiConfigService } from '../../shared/services/api-config.service'
 import { UsersService } from '../users/users.service'
-import { TokenDto } from './token.dto'
+import { TokenDto } from './dtos/token.dto'
 import { CreateUserDto } from '../users/dtos/create-user.dto'
 import { validateHash } from '../../helpers'
 import { UserEntity } from '../users/user.entity'

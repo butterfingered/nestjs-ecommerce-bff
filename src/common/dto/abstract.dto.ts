@@ -1,4 +1,5 @@
 import { ApiProperty } from '@nestjs/swagger'
+import { Expose } from 'class-transformer'
 import { AbstractEntity } from '../abstract.entity'
 
 export class AbstractDto {
@@ -6,6 +7,7 @@ export class AbstractDto {
   _id: string
 
   @ApiProperty()
+  @Expose()
   id: string
 
   @ApiProperty()
@@ -16,7 +18,6 @@ export class AbstractDto {
 
   constructor(entity: AbstractEntity, options?: { excludeFields?: boolean }) {
     if (!options?.excludeFields) {
-      console.log('this =>', this, 'entity:', entity)
       this.createdAt = entity.createdAt
       this.updatedAt = entity.updatedAt
       this._id = entity._id
