@@ -8,6 +8,13 @@ export type AuthConfig = {
   jwtExpirationTime: number
 }
 
+export type ApiResponse = {
+  statusCode: number
+  message: string
+  date: string
+  host: string
+  path: string
+}
 export type Optional<T> = T | undefined
 
 export interface ClassConstructor {

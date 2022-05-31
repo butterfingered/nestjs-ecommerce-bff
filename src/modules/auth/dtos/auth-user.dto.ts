@@ -1,14 +1,9 @@
-import { ApiProperty } from '@nestjs/swagger'
 import { Expose } from 'class-transformer'
-import { ResultsDto } from 'src/common/dto/results.dto'
+import { ApiResultDto } from 'src/common/dto/api-result.dto'
 
 export type UserDtoOptions = Partial<{ isActive: boolean }>
 
-export class AuthUserDto {
-  @ApiProperty()
+export class AuthUserDto extends ApiResultDto {
   @Expose()
   email: string
-
-  @Expose()
-  result: ResultsDto
 }

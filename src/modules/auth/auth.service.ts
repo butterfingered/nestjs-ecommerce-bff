@@ -15,14 +15,18 @@ export class AuthService {
 
   async createAccesToken(data: { role: RoleType; id: string }): Promise<TokenDto> {
     try {
-      const payload = { id: data.id, type: TokenType.ACCESS_TOKEN, role: data.role }
-      const accessToken = await this.jwtService.signAsync(payload).catch((e) => {
+      const accessToken = await this.jwtService.signAsync({ id: data.id, type: TokenType.ACCESS_TOKEN, role: data.role }).catch((e) => {
+        throw new InternalServerErrorException('error creating accessToken', e)
+      })
+
+      const refrehToken = await this.jwtService.signAsync({ id: data.id, type: TokenType.REFRESH_TOKEN, role: data.role }).catch((e) => {
         throw new InternalServerErrorException('error creating accessToken', e)
       })
 
       return new TokenDto({
         expiresIn: this.configService.authConfig.jwtExpirationTime,
         accessToken: accessToken,
+        refreshToken: refrehToken,
       })
     } catch (e) {
       throw new BadRequestException(e)

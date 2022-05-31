@@ -1,10 +1,9 @@
 import { UseInterceptors, NestInterceptor, ExecutionContext, CallHandler } from '@nestjs/common'
 import { Observable } from 'rxjs'
 import { map } from 'rxjs/operators'
-import { plainToInstance } from 'class-transformer'
+import { plainToInstance, instanceToPlain } from 'class-transformer'
 import { Response } from 'express'
-import { ClassConstructor } from '../types'
-import { ResultsDto } from '../common/dto/results.dto'
+import { ApiResponse, ClassConstructor } from '../types'
 
 export const Serialize = (dto: ClassConstructor) => {
   return UseInterceptors(new SerializeInterceptor(dto))
@@ -13,34 +12,21 @@ export const Serialize = (dto: ClassConstructor) => {
 export class SerializeInterceptor implements NestInterceptor {
   constructor(private dto: any) {}
   intercept(context: ExecutionContext, next: CallHandler<any>): Observable<any> | Promise<Observable<any>> {
-    //Run someting before a request is handled by the request handler
-    // console.log('im running before the handler', context)
-
     return next.handle().pipe(
       map((data: any) => {
         try {
           const response = context.switchToHttp().getResponse<Response>()
+          const plainData = instanceToPlain(data)
+          response.statusMessage = 'success'
 
-          console.log('context: ', context)
-          console.log('response: ', response)
-
-          return plainToInstance(
-            this.dto,
-            {
-              result: {
-                date: new Date().toISOString(),
-                statusCode: response.statusCode || 200,
-                host: response.req.hostname,
-                message: 'success',
-                path: response.req.url,
-              },
-              ...data,
-            },
-
-            { excludeExtraneousValues: true },
-          )
+          plainData.apiResponse = {
+            date: new Date().toISOString(),
+            host: response.req.hostname,
+            path: response.req.url,
+          } as ApiResponse
+          return plainToInstance(this.dto, { ...plainData }, { excludeExtraneousValues: true })
         } catch (e) {
-          console.error('Error', e)
+          throw new Error('Error al transformar de plano a instancia')
         }
       }),
     )

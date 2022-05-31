@@ -1,11 +1,17 @@
-import { UserDto } from 'src/modules/users/dtos/user.dto'
 import { TokenDto } from './token.dto'
-export class LoginPayloadDto {
-  user: UserDto
+import { Expose } from 'class-transformer'
+import { ApiResultDto } from 'src/common/dto/api-result.dto'
+
+export class LoginPayloadDto extends ApiResultDto {
+  @Expose()
+  email: string
+
+  @Expose()
   token: TokenDto
 
-  constructor(user: UserDto, token: TokenDto) {
-    this.user = user
+  constructor(email: string, token: TokenDto) {
+    super()
+    this.email = email
     this.token = token
   }
 }

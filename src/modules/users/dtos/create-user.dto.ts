@@ -15,20 +15,4 @@ export class CreateUserDto {
   @IsString()
   @MinLength(6)
   password: string
-
-  @ApiProperty()
-  @Column({ default: false })
-  readonly isEmailVerified: boolean
-
-  @ApiProperty()
-  @Column({ default: false })
-  readonly isPhoneVerified: boolean
-
-  @ApiProperty()
-  @Column({ default: false })
-  readonly isBanned: boolean
-
-  @ApiProperty()
-  @Column({ default: false })
-  readonly allowEmailMarketing: boolean
 }
