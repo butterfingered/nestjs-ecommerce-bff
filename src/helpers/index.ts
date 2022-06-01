@@ -1,3 +1,6 @@
+import { HostConfig } from './../types'
+import { ApiConfigService } from './../shared/services/api-config.service'
+import { UserEntity } from './../modules/users/user.entity'
 import { version as uuidVersion, validate as uuidValidate, v4 as uuid } from 'uuid'
 import { randomBytes, scrypt as _scrypt } from 'crypto'
 import { promisify } from 'util'
@@ -39,4 +42,16 @@ export const validateHash = async (aStringValue: string, bStringValue: string) =
   const hash = (await scrypt(bStringValue, salt, 32)) as Buffer
   //console.log('Hash: ', hash.toString('hex'), 'storedHash: ', storedHash)
   return storedHash == hash.toString('hex')
+}
+
+export const generateAuthenticationEmail = (user: UserEntity, hostConfig: HostConfig) => {
+  const { protocol, host, port } = hostConfig
+  return {
+    from: `Company name <developipetesting@gmail.com>`,
+    to: user.email, // list of receivers (separated by ,)
+    subject: 'Testing Nodemailer',
+    text: 'Verify Email',
+    html: `Hi! <br><br> Thanks for your registration<br><br>
+    <a href="${protocol}://${host}:${port}/auth/email/verify/${user.emailUuid}">Click here to activate your account</a>`,
+  }
 }

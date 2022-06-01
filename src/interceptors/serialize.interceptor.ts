@@ -1,9 +1,9 @@
 import { UseInterceptors, NestInterceptor, ExecutionContext, CallHandler } from '@nestjs/common'
 import { Observable } from 'rxjs'
 import { map } from 'rxjs/operators'
-import { plainToInstance, instanceToPlain } from 'class-transformer'
+import { plainToInstance } from 'class-transformer'
 import { Response } from 'express'
-import { ApiResponse, ClassConstructor } from '../types'
+import { ClassConstructor } from '../types'
 
 export const Serialize = (dto: ClassConstructor) => {
   return UseInterceptors(new SerializeInterceptor(dto))
@@ -15,16 +15,14 @@ export class SerializeInterceptor implements NestInterceptor {
     return next.handle().pipe(
       map((data: any) => {
         try {
+          console.log('data:', data)
           const response = context.switchToHttp().getResponse<Response>()
-          const plainData = instanceToPlain(data)
           response.statusMessage = 'success'
+          // const plainData = instanceToPlain(data)
+          //  console.log('plainData', plainData)
+          //   console.log('this.dto', this.dto)
 
-          plainData.apiResponse = {
-            date: new Date().toISOString(),
-            host: response.req.hostname,
-            path: response.req.url,
-          } as ApiResponse
-          return plainToInstance(this.dto, { ...plainData }, { excludeExtraneousValues: true })
+          return plainToInstance(this.dto, { ...data }, { excludeExtraneousValues: true })
         } catch (e) {
           throw new Error('Error al transformar de plano a instancia')
         }

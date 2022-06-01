@@ -8,6 +8,7 @@ import { Serialize } from '../../interceptors/serialize.interceptor'
 import { AuthUserDto } from './dtos/auth-user.dto'
 import { LoginPayloadDto } from './dtos/login-payload'
 import { AuthOkMessage } from './auth.decorator'
+import { IResponse } from 'src/common/dto/response.dto'
 
 @Controller('auth')
 export class AuthController {
@@ -26,11 +27,14 @@ export class AuthController {
     return new LoginPayloadDto(userEntity.toDto().email, token)
   }
 
-  @Serialize(AuthUserDto)
+  @Serialize(IResponse)
   @Post('signup')
   @HttpCode(HttpStatus.OK)
   @ApiOkResponse({ type: UserDto, description: 'Successfully Registered' })
-  async signUp(@Body() createUserDto: CreateUserDto) {
-    return await this.authService.signUp(createUserDto)
+  async signUp(@Body() createUserDto: CreateUserDto): Promise<IResponse> {
+    const user = await this.authService.signUp(createUserDto)
+    const userWithEmailUuid = await this.authService.generateEmailUuid(user.email)
+    const userWithEmailUuidSaved = await this.userService.update(userWithEmailUuid)
+    return await this.authService.sendVerificationEmail(userWithEmailUuidSaved.email)
   }
 }

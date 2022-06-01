@@ -1,3 +1,4 @@
+import { NodeMailerService } from '../../shared/services/nodemailer.service'
 import { JwtModule } from '@nestjs/jwt'
 import { PassportModule } from '@nestjs/passport'
 import { Module, forwardRef } from '@nestjs/common'
@@ -28,7 +29,7 @@ import { PublicStrategy } from './public.strategy'
     }),
   ],
   controllers: [AuthController],
-  providers: [AuthService, JwtStrategy, PublicStrategy],
+  providers: [AuthService, JwtStrategy, PublicStrategy, NodeMailerService],
   exports: [JwtModule, AuthService],
 })
 export class AuthModule {}

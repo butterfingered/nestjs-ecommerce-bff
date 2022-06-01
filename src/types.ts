@@ -15,6 +15,26 @@ export type ApiResponse = {
   host: string
   path: string
 }
+
+export type HostConfig = {
+  protocol: string
+  host: string
+  port: number
+}
+
+export type NodeMailConfig = {
+  port: number
+  secure: boolean
+  tls: {
+    rejectUnauthorized: boolean
+  }
+  host: string
+  auth: {
+    user: string
+    pass: string //you must use app password from may-30-2022
+  }
+}
+
 export type Optional<T> = T | undefined
 
 export interface ClassConstructor {

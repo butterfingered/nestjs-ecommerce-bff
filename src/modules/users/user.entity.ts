@@ -20,6 +20,7 @@ export interface IUserEntity extends IAbstractEntity<UserDto> {
   allowEmailMarketing: boolean
   isBanned: boolean
   isActive: boolean
+  emailUuid: string
 }
 
 @Entity({ name: 'users' })
@@ -66,6 +67,9 @@ export class UserEntity extends AbstractEntity<UserDto> implements IUserEntity {
 
   @Column()
   isActive: boolean
+
+  @Column()
+  emailUuid: string
 
   @BeforeInsert()
   beforeInsertActions() {

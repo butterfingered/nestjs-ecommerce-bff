@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common'
 import { ConfigService } from '@nestjs/config'
-import { AuthConfig } from '../../types'
+import { AuthConfig, HostConfig } from '../../types'
 
 @Injectable()
 export class ApiConfigService {
@@ -23,6 +23,29 @@ export class ApiConfigService {
       privateKey: this.getString('JWT_PRIVATE_KEY'),
       publicKey: this.getString('JWT_PUBLIC_KEY'),
       jwtExpirationTime: this.getNumber('JWT_EXPIRATION_TIME'),
+    }
+  }
+
+  get nodeMailConfig() {
+    return {
+      tls: {
+        rejectUnauthorized: this.getBoolean('NODEMAILER_REJECT_UNAUTHORIZED'),
+      },
+      host: this.getString('NODEMAILER_HOST'),
+      port: this.getNumber('NODEMAILER_PORT'),
+      secure: this.getBoolean('NODEMAILER_SECURE'),
+      auth: {
+        user: this.getString('NODEMAILER_USER'),
+        pass: this.getString('NODEMAILER_PASSWORD'),
+      },
+    }
+  }
+
+  get hostConfig(): HostConfig {
+    return {
+      protocol: this.getString('HOST_PROTOCOL'),
+      host: this.getString('HOST'),
+      port: this.getNumber('HOST_PORT'),
     }
   }
 

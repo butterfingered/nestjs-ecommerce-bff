@@ -1,7 +1,8 @@
 import { Global, Module } from '@nestjs/common'
 import { ApiConfigService } from './services/api-config.service'
+import { NodeMailerService } from './services/nodemailer.service'
 
-const providers = [ApiConfigService]
+const providers = [ApiConfigService, NodeMailerService]
 
 @Global()
 @Module({

@@ -6,6 +6,7 @@ import { UserEntity } from './user.entity'
 import type { FindConditions } from 'typeorm'
 import type { Optional } from '../../types'
 import { UserBadRequestException } from '../../exceptions/users.exception'
+import { uuidV4 } from 'src/helpers'
 
 @Injectable()
 export class UsersService {
@@ -44,18 +45,25 @@ export class UsersService {
     return users
   }
 
-  /*
-  async update(id: string, attrs: Partial<UserEntity>) {
-    const user = await this.findOne(id)
-
-    if (!user) {
-      throw new NotFoundException('error not found ')
-    }
-    Object.assign(user, attrs)
-
-    return this.repo.save(user)
+  async update(user: UserEntity): Promise<UserEntity> {
+    return await this.repo.save(user)
   }
 
+  async findUserByEmail(email: string): Promise<UserEntity> {
+    const [user] = await this.find(email)
+    return user
+  }
+
+  async findUsersByEmail(email: string): Promise<UserEntity[]> {
+    return await this.find(email)
+  }
+
+  generateEmailUuid(user: UserEntity): UserEntity {
+    user.emailUuid = uuidV4
+    return user
+  }
+
+  /*
   async remove(id: string) {
     const user = await this.findOne(id)
 
