@@ -21,6 +21,7 @@ export interface IUserEntity extends IAbstractEntity<UserDto> {
   isBanned: boolean
   isActive: boolean
   emailUuid: string
+  isVerificationEmailSent: boolean
 }
 
 @Entity({ name: 'users' })
@@ -71,6 +72,9 @@ export class UserEntity extends AbstractEntity<UserDto> implements IUserEntity {
   @Column()
   emailUuid: string
 
+  @Column()
+  isVerificationEmailSent: boolean
+
   @BeforeInsert()
   beforeInsertActions() {
     this.isEmailVerified = false
@@ -78,5 +82,6 @@ export class UserEntity extends AbstractEntity<UserDto> implements IUserEntity {
     this.allowEmailMarketing = false
     this.isBanned = false
     this.role = RoleType.CUSTOMER
+    this.isVerificationEmailSent = false
   }
 }

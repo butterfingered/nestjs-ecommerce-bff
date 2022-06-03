@@ -13,17 +13,14 @@ export class AllExceptionsFilter implements ExceptionFilter {
     const request = ctx.getRequest<Request>()
     const httpStatus = exception instanceof HttpException ? exception.getStatus() : HttpStatus.INTERNAL_SERVER_ERROR
 
-    const result = {
-      status: 'fail',
-      code: httpStatus,
+    response.status(httpStatus).json({
+      success: 'fail',
       timestamp: new Date().toISOString(),
       path: httpAdapter.getRequestUrl(request),
-      exceptionDetails: exception.getResponse() as {
+      ...(exception.getResponse() as {
         key: string
         args: Record<string, unknown>
-      },
-    }
-
-    response.status(httpStatus).json(result)
+      }),
+    })
   }
 }

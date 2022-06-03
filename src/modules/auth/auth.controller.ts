@@ -1,16 +1,15 @@
-import { Body, Controller, HttpCode, HttpStatus, Post } from '@nestjs/common'
-import { ApiOkResponse } from '@nestjs/swagger'
+import { Body, Controller, Get, HttpCode, HttpStatus, Post, Param, Version } from '@nestjs/common'
+import { ApiOkResponse, ApiParam, ApiTags } from '@nestjs/swagger'
 import { CreateUserDto } from '../users/dtos/create-user.dto'
 import { UserDto } from '../users/dtos/user.dto'
 import { UsersService } from '../users/users.service'
 import { AuthService } from './auth.service'
 import { Serialize } from '../../interceptors/serialize.interceptor'
-import { AuthUserDto } from './dtos/auth-user.dto'
 import { LoginPayloadDto } from './dtos/login-payload'
-import { AuthOkMessage } from './auth.decorator'
 import { IResponse } from 'src/common/dto/response.dto'
 
-@Controller('auth')
+@ApiTags('auth')
+@Controller({ path: 'auth', version: '1' })
 export class AuthController {
   constructor(private authService: AuthService, private userService: UsersService) {}
 
@@ -35,6 +34,21 @@ export class AuthController {
     const user = await this.authService.signUp(createUserDto)
     const userWithEmailUuid = await this.authService.generateEmailUuid(user.email)
     const userWithEmailUuidSaved = await this.userService.update(userWithEmailUuid)
+
     return await this.authService.sendVerificationEmail(userWithEmailUuidSaved.email)
+  }
+
+  @Serialize(IResponse)
+  @HttpCode(HttpStatus.OK)
+  @ApiParam({
+    name: 'uuid',
+    description: 'used to validate the user email',
+    example: '49216546-8cc1-4df6-928f-4b1d12b3f441',
+  })
+  @ApiOkResponse({ type: IResponse, description: 'Successfully verified' })
+  // @ApiException(() => [ResponseError])
+  @Get('verify/:uuid')
+  async verifyEmail(@Param('uuid') emailUuid): Promise<IResponse> {
+    return await this.authService.verifyEmail(emailUuid)
   }
 }

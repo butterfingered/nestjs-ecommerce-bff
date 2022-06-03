@@ -1,5 +1,4 @@
 import { HostConfig } from './../types'
-import { ApiConfigService } from './../shared/services/api-config.service'
 import { UserEntity } from './../modules/users/user.entity'
 import { version as uuidVersion, validate as uuidValidate, v4 as uuid } from 'uuid'
 import { randomBytes, scrypt as _scrypt } from 'crypto'
@@ -55,3 +54,12 @@ export const generateAuthenticationEmail = (user: UserEntity, hostConfig: HostCo
     <a href="${protocol}://${host}:${port}/auth/email/verify/${user.emailUuid}">Click here to activate your account</a>`,
   }
 }
+
+export const isNullOrUndefined = <T>(object: T | undefined | null): object is T => {
+  return <T>object !== undefined && <T>object !== null
+}
+
+/*
+export function isNullOrUndefined<T>(object: T | undefined | null): object is T {
+  return <T>object !== undefined && <T>object !== null
+}*/

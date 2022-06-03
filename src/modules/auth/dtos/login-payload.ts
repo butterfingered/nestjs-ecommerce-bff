@@ -1,8 +1,7 @@
 import { TokenDto } from './token.dto'
 import { Expose } from 'class-transformer'
-import { ApiResultDto } from 'src/common/dto/api-result.dto'
 
-export class LoginPayloadDto extends ApiResultDto {
+export class LoginPayloadDto {
   @Expose()
   email: string
 
@@ -10,7 +9,6 @@ export class LoginPayloadDto extends ApiResultDto {
   token: TokenDto
 
   constructor(email: string, token: TokenDto) {
-    super()
     this.email = email
     this.token = token
   }
