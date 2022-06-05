@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common'
 import { ConfigService } from '@nestjs/config'
-import { AuthConfig, HostConfig } from '../../types'
+import { AuthConfig, HostConfig, TwilioConfig } from '../../types'
 
 @Injectable()
 export class ApiConfigService {
@@ -46,6 +46,15 @@ export class ApiConfigService {
       protocol: this.getString('HOST_PROTOCOL'),
       host: this.getString('HOST'),
       port: this.getNumber('HOST_PORT'),
+    }
+  }
+
+  // sms provider
+  get twilioConfig(): TwilioConfig {
+    return {
+      accountSid: this.getString('TWILIO_ACCOUNT_SID'),
+      authToken: this.getString('TWILIO_AUTH_TOKEN'),
+      serviceSid: this.getString('TWILIO_SERVICE_SID'),
     }
   }
 

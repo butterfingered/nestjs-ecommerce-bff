@@ -1,3 +1,4 @@
+import { SmsService } from './../../shared/services/sms.service'
 import { NodeMailerService } from '../../shared/services/nodemailer.service'
 import { JwtService } from '@nestjs/jwt'
 import { Injectable, BadRequestException, InternalServerErrorException, NotFoundException, HttpException } from '@nestjs/common'
@@ -18,6 +19,7 @@ export class AuthService {
     private configService: ApiConfigService,
     private userService: UsersService,
     private nodeMailService: NodeMailerService,
+    private smsService: SmsService,
   ) {}
 
   async createAccesToken(data: { role: RoleType; id: string }): Promise<TokenDto> {
@@ -82,6 +84,11 @@ export class AuthService {
     }
 
     return new ResponseError('MAIL_NOT_SENT')
+  }
+
+  async sendVerificatinSms(phone: string): Promise<IResponse> {
+    await this.smsService.sendVerificatinSms(phone)
+    return new ResponseSuccess('REGISTER.USER_SMS_SENT_SUCCESSFULLY')
   }
 
   async verifyEmail(emailUuid: string): Promise<IResponse> {

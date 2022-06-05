@@ -13,6 +13,7 @@ const cookieSession = require('cookie-session')
 import { startMongoInMemory } from './database/databaseConection'
 import { UserSubscriber } from './entity-subscribers/user-subscriber'
 import { AuthModule } from './modules/auth/auth.module'
+import { TwilioModule } from './modules/twilio'
 
 @Module({
   imports: [
@@ -41,6 +42,14 @@ import { AuthModule } from './modules/auth/auth.module'
           }
       },
 
+      inject: [ApiConfigService],
+    }),
+    TwilioModule.forRootAsync({
+      imports: [ConfigModule],
+      useFactory: async (configService: ApiConfigService) => ({
+        accountSid: configService.twilioConfig.accountSid,
+        authToken: configService.twilioConfig.authToken,
+      }),
       inject: [ApiConfigService],
     }),
   ],

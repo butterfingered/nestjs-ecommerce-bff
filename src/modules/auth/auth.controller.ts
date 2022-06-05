@@ -1,13 +1,13 @@
-import { Body, Controller, Get, HttpCode, HttpStatus, Post, Param, Version } from '@nestjs/common'
+import { Body, Controller, Get, HttpCode, HttpStatus, Post, Param } from '@nestjs/common'
 import { ApiOkResponse, ApiParam, ApiTags } from '@nestjs/swagger'
 import { CreateUserDto } from '../users/dtos/create-user.dto'
 import { UserDto } from '../users/dtos/user.dto'
+import { SendSmsDto } from '../users/dtos/send-sms.dto'
 import { UsersService } from '../users/users.service'
 import { AuthService } from './auth.service'
 import { Serialize } from '../../interceptors/serialize.interceptor'
 import { LoginPayloadDto } from './dtos/login-payload'
 import { IResponse } from 'src/common/dto/response.dto'
-
 @ApiTags('auth')
 @Controller({ path: 'auth', version: '1' })
 export class AuthController {
@@ -50,5 +50,17 @@ export class AuthController {
   @Get('verify/:uuid')
   async verifyEmail(@Param('uuid') emailUuid): Promise<IResponse> {
     return await this.authService.verifyEmail(emailUuid)
+  }
+
+  @Serialize(IResponse)
+  @HttpCode(HttpStatus.OK)
+  @ApiParam({
+    name: 'phone',
+    description: 'send verification SMS',
+    example: '+34623068335',
+  })
+  @Post('verify/sms')
+  async verifyPhone(@Body() sendSmsDto: SendSmsDto): Promise<IResponse> {
+    return await this.authService.sendVerificatinSms(sendSmsDto.phone)
   }
 }

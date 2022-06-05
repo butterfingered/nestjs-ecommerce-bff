@@ -8,6 +8,12 @@ export type AuthConfig = {
   jwtExpirationTime: number
 }
 
+export type TwilioConfig = {
+  accountSid: string
+  authToken: string
+  serviceSid: string
+}
+
 export type ApiResponse = {
   statusCode: number
   message: string

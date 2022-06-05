@@ -1,3 +1,4 @@
+import { SmsService } from './../../shared/services/sms.service'
 import { NodeMailerService } from '../../shared/services/nodemailer.service'
 import { JwtModule } from '@nestjs/jwt'
 import { PassportModule } from '@nestjs/passport'
@@ -29,7 +30,7 @@ import { PublicStrategy } from './public.strategy'
     }),
   ],
   controllers: [AuthController],
-  providers: [AuthService, JwtStrategy, PublicStrategy, NodeMailerService],
+  providers: [AuthService, JwtStrategy, PublicStrategy, NodeMailerService, SmsService],
   exports: [JwtModule, AuthService],
 })
 export class AuthModule {}
