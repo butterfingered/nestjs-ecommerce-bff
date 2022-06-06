@@ -49,6 +49,9 @@ export class UserDto extends AbstractDto {
   @ApiProperty()
   isVerificationEmailSent: boolean
 
+  @ApiProperty()
+  isVerificationSmsSent: boolean
+
   constructor(user: UserEntity) {
     super(user)
     this.firstName = user.firstName
@@ -65,5 +68,6 @@ export class UserDto extends AbstractDto {
     this.isBanned = user.isBanned
     this.allowEmailMarketing = user.allowEmailMarketing
     this.isVerificationEmailSent = user.isVerificationEmailSent
+    this.isVerificationSmsSent = user.isVerificationSmsSent
   }
 }

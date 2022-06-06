@@ -61,6 +61,7 @@ export class AuthController {
   })
   @Post('verify/sms')
   async verifyPhone(@Body() sendSmsDto: SendSmsDto): Promise<IResponse> {
-    return await this.authService.sendVerificatinSms(sendSmsDto.phone)
+
+    return await this.authService.sendVerificationSms(sendSmsDto.phone, sendSmsDto.email)
   }
 }

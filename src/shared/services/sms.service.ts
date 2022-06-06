@@ -12,7 +12,13 @@ export class SmsService {
 
   async sendVerificatinSms(phone: string) {
     try {
-      return await this.twilioClient.verify.services(this.configService.twilioConfig.serviceSid).verifications.create({ to: phone, channel: 'sms' })
+      return await this.twilioClient.verify
+        .services(this.configService.twilioConfig.serviceSid)
+        .verifications.create({ to: phone, channel: 'sms', locale: 'es' })
+        .then((verification) => {
+          console.log('verification:', verification)
+          return verification.status
+        })
     } catch (e) {
       console.error(`${e}`)
       throw new HttpException(e, e.status)

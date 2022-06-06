@@ -11,6 +11,7 @@ import { validateHash } from '../../helpers'
 import { UserEntity } from '../users/user.entity'
 import { UserBadRequestException, UserNotFoundException } from '../../exceptions/users.exception'
 import { ResponseSuccess, ResponseError, IResponse } from 'src/common/dto/response.dto'
+import { throws } from 'assert'
 
 @Injectable()
 export class AuthService {
@@ -86,8 +87,18 @@ export class AuthService {
     return new ResponseError('MAIL_NOT_SENT')
   }
 
-  async sendVerificatinSms(phone: string): Promise<IResponse> {
+  async sendVerificationSms(phone: string, email: string): Promise<IResponse> {
+    const user = await this.userService.findOne({ email })
+
+    if (!user) throw new NotFoundException('REGISTER.USER_NOT_FOUND_FOR_SMS_VALIDATION')
+
+    if (user.phone !== phone) throw new BadRequestException('REGISTER.USER_PHONE_DOESENT_MATCH')
+
+    if (user.isVerificationSmsSent) return new ResponseSuccess('REGISTER.VERIFICATION_SMS_ALREADY_SENT')
+
     await this.smsService.sendVerificatinSms(phone)
+    user.isVerificationSmsSent = true
+    this.userService.update(user)
     return new ResponseSuccess('REGISTER.USER_SMS_SENT_SUCCESSFULLY')
   }
 

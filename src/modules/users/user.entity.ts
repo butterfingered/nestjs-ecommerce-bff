@@ -22,6 +22,7 @@ export interface IUserEntity extends IAbstractEntity<UserDto> {
   isActive: boolean
   emailUuid: string
   isVerificationEmailSent: boolean
+  isVerificationSmsSent: boolean
 }
 
 @Entity({ name: 'users' })
@@ -74,6 +75,9 @@ export class UserEntity extends AbstractEntity<UserDto> implements IUserEntity {
 
   @Column()
   isVerificationEmailSent: boolean
+
+  @Column()
+  isVerificationSmsSent: boolean
 
   @BeforeInsert()
   beforeInsertActions() {
