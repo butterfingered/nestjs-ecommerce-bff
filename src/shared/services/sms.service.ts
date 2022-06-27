@@ -10,14 +10,28 @@ export class SmsService {
     private readonly configService: ApiConfigService,
   ) {}
 
-  async sendVerificatinSms(phone: string) {
+  async sendSmsVerificationCode(phone: string) {
     try {
       return await this.twilioClient.verify
         .services(this.configService.twilioConfig.serviceSid)
         .verifications.create({ to: phone, channel: 'sms', locale: 'es' })
         .then((verification) => {
-          console.log('verification:', verification)
+          console.log('verification:', verification.status)
           return verification.status
+        })
+    } catch (e) {
+      console.error(`${e}`)
+      throw new HttpException(e, e.status)
+    }
+  }
+  async checkVerificationSmsCode(phone: string, code: string) {
+    try {
+      return await this.twilioClient.verify
+        .services(this.configService.twilioConfig.serviceSid)
+        .verificationChecks.create({ to: phone, code: code })
+        .then((verification) => {
+          console.log('phone code:', verification.valid)
+          return verification.valid
         })
     } catch (e) {
       console.error(`${e}`)

@@ -3,10 +3,12 @@ import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger'
 import { AbstractDto } from '../../../common/dto/abstract.dto'
 import { RoleType } from '../../../constants/constants'
 import type { UserEntity } from '../user.entity'
+import { Column } from 'typeorm'
 
 export class UserDto extends AbstractDto {
   @ApiProperty()
   @Expose()
+  @Column({ unique: true })
   email: string
 
   @ApiPropertyOptional()

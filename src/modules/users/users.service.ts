@@ -37,7 +37,9 @@ export class UsersService {
   }
 
   async find(findData: FindConditions<UserEntity>): Promise<UserEntity[]> {
-    return await this.repo.find(findData).catch(() => [] as UserEntity[])
+    return await this.repo.find(findData).catch((e) => {
+      throw new InternalServerErrorException(`USERS.ERROR.ON_FIND_ONE_PROCESS ${e}`)
+    })
   }
 
   generateEmailUuid(user: UserEntity): UserEntity {

@@ -59,7 +59,6 @@ export const isNullOrUndefined = <T>(object: T | undefined | null): object is T 
   return <T>object !== undefined && <T>object !== null
 }
 
-/*
-export function isNullOrUndefined<T>(object: T | undefined | null): object is T {
-  return <T>object !== undefined && <T>object !== null
-}*/
+export const isNil = (value: any): null | undefined => {
+  if (value === null || value === undefined) return value
+}

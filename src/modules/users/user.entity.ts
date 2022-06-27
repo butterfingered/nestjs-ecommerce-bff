@@ -28,7 +28,7 @@ export interface IUserEntity extends IAbstractEntity<UserDto> {
 @Entity({ name: 'users' })
 @UseDto(UserDto)
 export class UserEntity extends AbstractEntity<UserDto> implements IUserEntity {
-  @Column()
+  @Column({ unique: true })
   email: string
 
   @Column({ select: false })
@@ -49,7 +49,7 @@ export class UserEntity extends AbstractEntity<UserDto> implements IUserEntity {
   @Column()
   role: RoleType
 
-  @Column({ nullable: true })
+  @Column({ nullable: true, unique: true })
   phone?: string
 
   @VirtualColumn()

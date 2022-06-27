@@ -10,8 +10,8 @@ import { CreateUserDto } from '../users/dtos/create-user.dto'
 import { validateHash } from '../../helpers'
 import { UserEntity } from '../users/user.entity'
 import { UserBadRequestException, UserNotFoundException } from '../../exceptions/users.exception'
-import { ResponseSuccess, ResponseError, IResponse } from 'src/common/dto/response.dto'
-import { throws } from 'assert'
+import { ResponseSuccess, IResponse } from 'src/common/dto/response.dto'
+import { SendSmsDto } from '../users/dtos/send-sms.dto'
 
 @Injectable()
 export class AuthService {
@@ -55,9 +55,10 @@ export class AuthService {
   }
 
   async signUp(createUserDto: CreateUserDto): Promise<UserEntity> {
-    const users = await this.userService.find(createUserDto)
+    const { email } = createUserDto
+    const users = await this.userService.find({ email })
 
-    if (users.length) throw new UserBadRequestException('REGISTER.EMAIL_ALREADY_TAKEN')
+    if (users.length) throw new UserBadRequestException('SIGN_UP.EMAIL_ALREADY_TAKEN')
 
     return await this.userService.create(createUserDto)
   }
@@ -70,36 +71,49 @@ export class AuthService {
   async sendVerificationEmail(email: string): Promise<IResponse> {
     const user = await this.userService.findOne({ email })
 
-    if (!user && !user.emailUuid) throw new UserNotFoundException('USER_NOT_REGISTERED')
+    if (!user) throw new UserNotFoundException('SIGP_UP.USER_NOT_REGISTERED')
 
-    if (user.isVerificationEmailSent) return new ResponseSuccess('REGISTER.VERIFICATION_EMAIL_ALREADY_SENT')
+    if (user.isVerificationEmailSent) throw new UserBadRequestException('SIGP_UP.VERIFICATION_EMAIL_ALREADY_SENT')
 
-    if (user.isEmailVerified) return new ResponseSuccess('REGISTER.USER_ALREADY_VERIFIED')
+    if (user.isEmailVerified) throw new UserBadRequestException('SIGP_UP.USER_ALREADY_VERIFIED')
 
     const emailSent = await this.nodeMailService.sendVerificationEmail(user)
+    if (!emailSent) throw new UserBadRequestException('SIGP_UP.EMAIL_NOT_SENT')
 
-    if (emailSent) {
-      user.isVerificationEmailSent = true
-      this.userService.update(user)
-      return new ResponseSuccess('REGISTER.USER_REGISTERED_SUCCESSFULLY')
-    }
-
-    return new ResponseError('MAIL_NOT_SENT')
+    user.isVerificationEmailSent = true
+    this.userService.update(user)
+    return new ResponseSuccess('SIGP_UP.USER_REGISTERED_SUCCESSFULLY')
   }
 
-  async sendVerificationSms(phone: string, email: string): Promise<IResponse> {
+  async sendSmsVerificationCode(sendSmsDto: SendSmsDto): Promise<IResponse> {
+    const { phone, email } = sendSmsDto
     const user = await this.userService.findOne({ email })
 
-    if (!user) throw new NotFoundException('REGISTER.USER_NOT_FOUND_FOR_SMS_VALIDATION')
+    if (!user) throw new NotFoundException('REGISTER.USER_NOT_FOUND_TO_START_THE_SMS_VALIDATION_PROCESS')
 
-    if (user.phone !== phone) throw new BadRequestException('REGISTER.USER_PHONE_DOESENT_MATCH')
+    // if (user.phone !== phone) throw new BadRequestException('REGISTER.USER_PHONE_DOESNT_MATCH')
+    if (user.isVerificationSmsSent) throw new UserBadRequestException('REGISTER.VERIFICATION_SMS_ALREADY_SENT')
 
-    if (user.isVerificationSmsSent) return new ResponseSuccess('REGISTER.VERIFICATION_SMS_ALREADY_SENT')
-
-    await this.smsService.sendVerificatinSms(phone)
+    await this.smsService.sendSmsVerificationCode(phone)
     user.isVerificationSmsSent = true
     this.userService.update(user)
-    return new ResponseSuccess('REGISTER.USER_SMS_SENT_SUCCESSFULLY')
+    return new ResponseSuccess('REGISTER.USER_SMS_CODE_SENT_SUCCESSFULLY')
+  }
+
+  async checkVerificationSmsCode(sendSmsDto: SendSmsDto): Promise<IResponse> {
+    const { phone, email, code } = sendSmsDto
+    const user = await this.userService.findOne({ email })
+    if (!user) throw new NotFoundException('REGISTER.USER_NOT_FOUND_TO_START_THE_SMS_VALIDATION_CODE_PROCESS')
+
+    if (user.isPhoneVerified) throw new UserBadRequestException('REGISTER.USER_PHONE_IS_ALREADY_VERIFIED')
+
+    const isPhoneValid = await this.smsService.checkVerificationSmsCode(phone, code)
+    if (!isPhoneValid) throw new UserBadRequestException('REGISTER.USER_SMS_CODE_IS_NOT_VALID')
+
+    user.phone = phone
+    user.isPhoneVerified = true
+    this.userService.update(user)
+    return new ResponseSuccess('REGISTER.USER_SMS_VALIDATE_SUCCESSFULLY')
   }
 
   async verifyEmail(emailUuid: string): Promise<IResponse> {
@@ -108,7 +122,7 @@ export class AuthService {
 
       if (!user) throw new NotFoundException('EMAIL_UUID_NOT_FOUND_FOR_VALIDATION')
 
-      if (user.isEmailVerified) return new ResponseSuccess('REGISTER.USER_ALREADY_VERIFIED')
+      if (user.isEmailVerified) throw new UserBadRequestException('REGISTER.USER_EMAIL_ALREADY_VERIFIED')
 
       user.isEmailVerified = true
       await this.userService.update(user)

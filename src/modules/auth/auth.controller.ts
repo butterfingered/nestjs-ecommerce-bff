@@ -45,9 +45,9 @@ export class AuthController {
     description: 'used to validate the user email',
     example: '49216546-8cc1-4df6-928f-4b1d12b3f441',
   })
-  @ApiOkResponse({ type: IResponse, description: 'Successfully verified' })
+  @ApiOkResponse({ type: IResponse, description: 'Email successfully verified' })
   // @ApiException(() => [ResponseError])
-  @Get('verify/:uuid')
+  @Get('email/verify/:uuid')
   async verifyEmail(@Param('uuid') emailUuid): Promise<IResponse> {
     return await this.authService.verifyEmail(emailUuid)
   }
@@ -59,9 +59,22 @@ export class AuthController {
     description: 'send verification SMS',
     example: '+34623068335',
   })
-  @Post('verify/sms')
-  async verifyPhone(@Body() sendSmsDto: SendSmsDto): Promise<IResponse> {
+  @ApiOkResponse({ type: IResponse, description: 'sms code sent' })
+  @Post('sms/verify/send-code')
+  async sendSmsVerificationCode(@Body() sendSmsDto: SendSmsDto): Promise<IResponse> {
+    return await this.authService.sendSmsVerificationCode(sendSmsDto)
+  }
 
-    return await this.authService.sendVerificationSms(sendSmsDto.phone, sendSmsDto.email)
+  @Serialize(IResponse)
+  @HttpCode(HttpStatus.OK)
+  @ApiParam({
+    name: 'phone',
+    description: 'validate verification phone',
+    example: '+34623068335',
+  })
+  @ApiOkResponse({ type: IResponse, description: 'The phone number was validated' })
+  @Post('sms/verify/validate-sent-code')
+  async checkVerificationSmsCode(@Body() sendSmsDto: SendSmsDto): Promise<IResponse> {
+    return await this.authService.checkVerificationSmsCode(sendSmsDto)
   }
 }
